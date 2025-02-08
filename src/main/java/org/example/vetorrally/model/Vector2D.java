@@ -3,6 +3,7 @@ package org.example.vetorrally.model;
 /**
  *  A class to represent 2D vectors with custom methods
  */
+
 public class Vector2D {
     private int x;
     private int y;

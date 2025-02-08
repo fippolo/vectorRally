@@ -12,11 +12,11 @@ public enum TrackElement {
     NEXTPROJECTION('N'),
     PLAYER('P');
 
-    private char symbol;
+    private final char symbol;
 
     /**
      * constructor
-     * @param symbol
+     * @param symbol a single char representing each and every tipe of element in the track
      */
     TrackElement(char symbol) {
         this.symbol = symbol;
@@ -31,7 +31,7 @@ public enum TrackElement {
     }
 
     /**
-     * get the enumerator constant from a char symbol
+     * get the enumerator constant from a char symbol (implemented but not used)
      * @param symbol char representation of the constant
      * @return constant represented by symbol
      */

@@ -10,20 +10,23 @@ import java.util.*;
  * main game engine
  */
 public class GameEngine {
-    private List<Bot> bots;
+    private final List<Bot> bots;
     private Track gameTrack;
     private Renderer renderer;
     private Player player;
     private AIDirector aidirector;
+    private final InputHandler inputHandler;
 
     /**
      * game engine constructor
      * @param trackPath the absolute path to the track file
      * @throws IOException threw if file is not found or can't be read
      */
-    public GameEngine(String trackPath) throws IOException {
+    public GameEngine(String trackPath, InputHandler inputHandler) throws IOException {
         bots = new ArrayList<>();
+        this.inputHandler = inputHandler;
         startGame(trackPath);
+
     }
 
     /**
@@ -41,7 +44,7 @@ public class GameEngine {
         //initializing cars(bot and player)
         for(int i = 0; i < gameTrack.getCarQuantity(); i++) {
             if(i == 0) // player car will always have id=0
-                player = new Player(gameTrack.getStartLine().get(i),i);
+                player = new Player(gameTrack.getStartLine().get(i), inputHandler);
             else
                 bots.add(new Bot(gameTrack, gameTrack.getStartLine().get(i), i, ((i % 2) == 0))); // i bot con posizione pari adotterano la strategia di percorre il tracciato fino al traguardo e quelli dispari rincorreranno il player
         }
@@ -51,15 +54,6 @@ public class GameEngine {
         //launching gameloop
         gameloop();
     }
-
-    //getters
-    public List<Bot> getBots() {
-        return bots;
-    }
-    public Track getGameTrack() {
-        return gameTrack;
-    }
-    public Renderer getRenderer() {return renderer;}
 
     /**
      * uses render object to update all the car position
@@ -78,12 +72,7 @@ public class GameEngine {
      */
     private boolean hasPlayerWon(){
         for(Vector2D f : gameTrack.getFinishLine()){
-            if(player.getPosition().getX() == f.getX() && player.getPosition().getY() == f.getY()){
-                return true;
-            }
-            else {
-                return false;
-            }
+            return player.getPosition().getX() == f.getX() && player.getPosition().getY() == f.getY();
         }
         return false;
     }
@@ -110,7 +99,8 @@ public class GameEngine {
         while(!done) {
             update();
             player.nextmove();
-            if(done = (hasPlayerWon() || hasPlayerCrashed())){
+            done = (hasPlayerWon() || hasPlayerCrashed());
+            if(done){
                 if(hasPlayerCrashed()){
                     System.out.println("Player crashed");
                 } else if (hasPlayerWon()) {

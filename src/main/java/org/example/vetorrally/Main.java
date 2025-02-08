@@ -1,21 +1,19 @@
 package org.example.vetorrally;
 
 import org.example.vetorrally.controller.GameEngine;
+import org.example.vetorrally.controller.InputHandler;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class Main {
     // entry point
     public static void main(String[] args) {
         try{
-            Scanner scanner = new Scanner(System.in);
+            InputHandler inputHandler = new InputHandler();
 
-            // Prompt the user to enter a file path
-            System.out.print("Please enter the file path: ");
-            String filePathString = scanner.nextLine();
+            String filePathString = inputHandler.getStringInput("Please enter the path to the file: ");
 
             // Convert the string to a Path object
             Path filePath = Paths.get(filePathString);
@@ -23,7 +21,8 @@ public class Main {
             // Print the Path object to verify the input
             System.out.println("You entered the file path: " + filePath);
 
-            GameEngine newGame = new GameEngine(filePath.toString());
+            new GameEngine(filePath.toString(), inputHandler);
+            inputHandler.cleanup();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

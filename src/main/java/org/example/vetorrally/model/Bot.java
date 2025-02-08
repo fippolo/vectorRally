@@ -1,13 +1,12 @@
 package org.example.vetorrally.model;
-import java.io.IOException;
 import java.util.*;
 
 /**
  * bot class that handle bot individual behaviour
  */
 public class Bot extends Car {
-    private Track track;
-    private boolean chasePlayer;
+    private final Track track;
+    private final boolean chasePlayer;
     private Vector2D playerPosition;
 
     /**
@@ -17,7 +16,7 @@ public class Bot extends Car {
      * @param id bot identifier
      */
     public Bot(Track track, Vector2D startpos, int id, boolean chasePlayer) {
-        super(startpos, id);  // Initialize the Car part of Bot
+        super(startpos);  // Initialize the Car part of Bot
         this.track = track;
         this.chasePlayer = chasePlayer;
     }

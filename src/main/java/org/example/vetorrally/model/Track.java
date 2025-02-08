@@ -12,14 +12,14 @@ public class Track {
     private TrackElement[][] grid;
     private int width;
     private int height;
-    private List<Vector2D> startLine;
-    private List<Vector2D> finishLine;
+    private final List<Vector2D> startLine;
+    private final List<Vector2D> finishLine;
     private int carQuantity;
 
     /**
      * constructor
-     * @param filePath
-     * @throws IOException
+     * @param filePath file path to txt file containing a track
+     * @throws IOException needed to trhow io exception when reading file
      */
     public Track(String filePath) throws IOException {
         startLine = new ArrayList<>();
