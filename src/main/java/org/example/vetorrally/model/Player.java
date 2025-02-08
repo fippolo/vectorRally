@@ -30,7 +30,8 @@ public class Player extends Car {
                 notvalid = false;
             } else {
                 System.out.println("Invalid input. Please enter a valid integer.");
-                scanner.next(); // Clear the invalid input
+                if(scanner.hasNextInt())
+                    scanner.next(); // Clear the invalid input
             }
         }
 

@@ -12,17 +12,27 @@ public class AIDirector {
     private Renderer renderer;
     private Track gameTrack;
     private List<Bot> bots;
+    private Vector2D playerPosition;
+
     public AIDirector(Track gameTrack, List<Bot> bots, Renderer renderer) {
         this.gameTrack = gameTrack;
         this.bots = bots;
         this.renderer = renderer;
     }
+
+    public void updatePlayerPosition(Vector2D position) {
+        this.playerPosition = position;
+    }
+
     public void moveBots(){
         for (Bot bot : bots) {
             renderer.clearOcucpiedSpace(bot.getPosition());
+            bot.updatePlayerPosition(playerPosition);
             Vector2D nextPos= bot.findNextMove();
-            bot.moveTo(nextPos);
-            renderer.setOccupied(bot.getPosition());
+            if (nextPos != null) {
+                bot.moveTo(nextPos);
+                renderer.setOccupied(bot.getPosition());
+            }
         }
     }
 

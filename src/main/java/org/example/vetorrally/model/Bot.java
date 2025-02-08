@@ -7,6 +7,8 @@ import java.util.*;
  */
 public class Bot extends Car {
     private Track track;
+    private boolean chasePlayer;
+    private Vector2D playerPosition;
 
     /**
      * constructor
@@ -14,9 +16,14 @@ public class Bot extends Car {
      * @param startpos bot starting position
      * @param id bot identifier
      */
-    public Bot(Track track, Vector2D startpos, int id) {
+    public Bot(Track track, Vector2D startpos, int id, boolean chasePlayer) {
         super(startpos, id);  // Initialize the Car part of Bot
         this.track = track;
+        this.chasePlayer = chasePlayer;
+    }
+
+    public void updatePlayerPosition(Vector2D playerPos) {
+        this.playerPosition = playerPos;
     }
 
     /**
@@ -24,55 +31,7 @@ public class Bot extends Car {
      * @return the next most effecient position to be in according to bfs
      */
     public Vector2D findNextMove() {
-        Queue<Vector2D> queue = new LinkedList<>();
-        queue.add(getPosition());  // Add the start position to the queue
-
-        boolean[][] visited = new boolean[track.getHeight()][track.getWidth()];
-        visited[getPosition().getY()][getPosition().getX()] = true;  // Mark the start position as visited
-
-        // Map to store the previous position for each position (for path tracking)
-        Map<Vector2D, Vector2D> previous = new HashMap<>();
-        previous.put(getPosition(), null);
-
-        // Possible movement directions: down, up, right, left, and diagonals
-        Vector2D[] directions = {
-                new Vector2D(0, 1),   // Down
-                new Vector2D(0, -1),  // Up
-                new Vector2D(1, 0),   // Right
-                new Vector2D(-1, 0),  // Left
-                new Vector2D(1, 1),   // Down-Right
-                new Vector2D(1, -1),  // Up-Right
-                new Vector2D(-1, 1),  // Down-Left
-                new Vector2D(-1, -1)  // Up-Left
-        };
-
-        // Breadth-First Search (BFS) algorithm
-        while (!queue.isEmpty()) {
-            Vector2D current = queue.poll();  // Get the next position to explore
-
-            for (Vector2D direction : directions) {
-                Vector2D newPosition = new Vector2D(current.getX() + direction.getX(), current.getY() + direction.getY());
-
-                // Check if the move is valid and the position has not been visited
-                if (isValidMove(newPosition) && !visited[newPosition.getY()][newPosition.getX()]) {
-                    visited[newPosition.getY()][newPosition.getX()] = true;  // Mark the new position as visited
-                    previous.put(newPosition, current);  // Track the path
-
-                    // Check if the new position is the finish line
-                    if (track.getTrackElement(newPosition) == TrackElement.FINISH) {
-                        List<Vector2D> path = walkbackPath(newPosition, previous);
-                        return path.get(1); // return index 1 because 0 is the current position
-                    }
-
-                    // Add the new position to the queue to explore further
-                    queue.add(newPosition);
-                }
-            }
-        }
-
-        // If the queue is empty and the finish line was not reached
-        System.out.println("a bot could not find a path to the finish line.");
-        return null;
+        return chasePlayer ? chasePlayerStrategy() : chaseFinishLineStrategy();
     }
 
     /**
@@ -84,6 +43,102 @@ public class Bot extends Car {
         return position.getY() >= 0 && position.getX() >= 0 &&
                 position.getY() < track.getHeight() && position.getX() < track.getWidth() &&
                 track.getTrackElement(position) != TrackElement.BOUNDARY && track.getTrackElement(position) != TrackElement.OCCUPIED;
+    }
+
+    private Vector2D chasePlayerStrategy() {
+        if (playerPosition == null) {
+            return chaseFinishLineStrategy();
+        }
+
+        Queue<Vector2D> queue = new LinkedList<>();
+        queue.add(getPosition());
+
+        boolean[][] visited = new boolean[track.getHeight()][track.getWidth()];
+        visited[getPosition().getY()][getPosition().getX()] = true;
+
+        Map<Vector2D, Vector2D> previous = new HashMap<>();
+        previous.put(getPosition(), null);
+
+        Vector2D[] directions = {
+                new Vector2D(0, 1), new Vector2D(0, -1),
+                new Vector2D(1, 0), new Vector2D(-1, 0),
+                new Vector2D(1, 1), new Vector2D(1, -1),
+                new Vector2D(-1, 1), new Vector2D(-1, -1)
+        };
+
+        while (!queue.isEmpty()) {
+            Vector2D current = queue.poll();
+
+            // Found player position
+            if (current.getX() == playerPosition.getX() &&
+                    current.getY() == playerPosition.getY()) {
+                List<Vector2D> path = walkbackPath(current, previous);
+                return path.size() > 1 ? path.get(1) : current;
+            }
+
+            for (Vector2D direction : directions) {
+                Vector2D newPosition = new Vector2D(
+                        current.getX() + direction.getX(),
+                        current.getY() + direction.getY()
+                );
+
+                if (isValidMove(newPosition) &&
+                        !visited[newPosition.getY()][newPosition.getX()]) {
+                    visited[newPosition.getY()][newPosition.getX()] = true;
+                    previous.put(newPosition, current);
+                    queue.add(newPosition);
+                }
+            }
+        }
+
+        // Fallback to finish line strategy if player cannot be reached
+        return chaseFinishLineStrategy();
+    }
+
+    private Vector2D chaseFinishLineStrategy() {
+        // Original findNextMove implementation
+        Queue<Vector2D> queue = new LinkedList<>();
+        queue.add(getPosition());
+
+        boolean[][] visited = new boolean[track.getHeight()][track.getWidth()];
+        visited[getPosition().getY()][getPosition().getX()] = true;
+
+        Map<Vector2D, Vector2D> previous = new HashMap<>();
+        previous.put(getPosition(), null);
+
+        Vector2D[] directions = {
+                new Vector2D(0, 1), new Vector2D(0, -1),
+                new Vector2D(1, 0), new Vector2D(-1, 0),
+                new Vector2D(1, 1), new Vector2D(1, -1),
+                new Vector2D(-1, 1), new Vector2D(-1, -1)
+        };
+
+        while (!queue.isEmpty()) {
+            Vector2D current = queue.poll();
+
+            for (Vector2D direction : directions) {
+                Vector2D newPosition = new Vector2D(
+                        current.getX() + direction.getX(),
+                        current.getY() + direction.getY()
+                );
+
+                if (isValidMove(newPosition) &&
+                        !visited[newPosition.getY()][newPosition.getX()]) {
+                    visited[newPosition.getY()][newPosition.getX()] = true;
+                    previous.put(newPosition, current);
+
+                    if (track.getTrackElement(newPosition) == TrackElement.FINISH) {
+                        List<Vector2D> path = walkbackPath(newPosition, previous);
+                        return path.size() > 1 ? path.get(1) : newPosition;
+                    }
+
+                    queue.add(newPosition);
+                }
+            }
+        }
+
+        System.out.println("Bot could not find path to finish line.");
+        return null;
     }
 
     /**

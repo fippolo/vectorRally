@@ -43,9 +43,11 @@ public class GameEngine {
             if(i == 0) // player car will always have id=0
                 player = new Player(gameTrack.getStartLine().get(i),i);
             else
-                bots.add(new Bot(gameTrack, gameTrack.getStartLine().get(i), i));
+                bots.add(new Bot(gameTrack, gameTrack.getStartLine().get(i), i, ((i % 2) == 0))); // i bot con posizione pari adotterano la strategia di percorre il tracciato fino al traguardo e quelli dispari rincorreranno il player
         }
         aidirector = new AIDirector(gameTrack, bots,renderer);
+        assert player != null;
+        aidirector.updatePlayerPosition(player.getPosition());
         //launching gameloop
         gameloop();
     }
