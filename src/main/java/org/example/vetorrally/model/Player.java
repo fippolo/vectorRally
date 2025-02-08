@@ -5,16 +5,17 @@ import org.example.vetorrally.controller.InputHandler;
 
 public class Player extends Car {
     private final InputHandler inputHandler;
-    private Vector2D lastPos;
+
     /**
      * player object constructor
      * @param startpos initial player position
      */
     public Player(Vector2D startpos, InputHandler inputHandler) {
         super(startpos);
-        lastPos = startpos;
         this.inputHandler = inputHandler;
     }
+
+
 
     /**
      * method to handle player input and execution
@@ -39,7 +40,7 @@ public class Player extends Car {
         }
 
         //if valid values were inputed, the move is executed
-        lastPos = this.getPosition();
+
         move(new Vector2D(x, y));
     }
 }

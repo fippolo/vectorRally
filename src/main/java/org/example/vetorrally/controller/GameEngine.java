@@ -127,6 +127,7 @@ public class GameEngine {
         renderer.printTrack();
         System.out.println("player position:             " + player.getPosition());
         System.out.println("player next move projection: " + player.getNextPosition());
+        aidirector.updatePlayerPosition(player.getPosition());
         player.nextmove();
         aidirector.moveBots();
     }

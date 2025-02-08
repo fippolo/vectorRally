@@ -20,7 +20,6 @@ public class Main {
 
             // Print the Path object to verify the input
             System.out.println("You entered the file path: " + filePath);
-
             new GameEngine(filePath.toString(), inputHandler);
             inputHandler.cleanup();
         } catch (IOException e) {
