@@ -23,8 +23,6 @@ public class Main {
             // Print the Path object to verify the input
             System.out.println("You entered the file path: " + filePath);
 
-            // Close the scanner to free up resources
-            scanner.close();
             GameEngine newGame = new GameEngine(filePath.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
