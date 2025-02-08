@@ -163,9 +163,12 @@ public class Bot extends Car {
         nextPosition.subtract(this.getPosition()); //
         Vector2D delta = nextPosition;
         delta.subtract(this.getSpeed()); // factor in speed
-        Vector2D debugx = this.getPosition();
 
-        System.out.println(debugx);
+
+        if (System.getProperty("debug") != null)
+            System.out.println(this.getPosition());
+
+
         move(delta);  // execute move
     }
 

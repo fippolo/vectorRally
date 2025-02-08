@@ -98,11 +98,12 @@ public class GameEngine {
         boolean done = false;
         while(!done) {
             update();
-            player.nextmove();
+
             done = (hasPlayerWon() || hasPlayerCrashed());
             if(done){
                 if(hasPlayerCrashed()){
                     System.out.println("Player crashed");
+                    return;
                 } else if (hasPlayerWon()) {
                     System.out.println("Player won");
                 }
@@ -120,12 +121,14 @@ public class GameEngine {
      * aforementioned function
      */
     private void update(){
-        aidirector.moveBots();
+
         renderer.projectCarCenterPos(player.getNextPosition());
         this.renderCarsPosition();
         renderer.printTrack();
         System.out.println("player position:             " + player.getPosition());
         System.out.println("player next move projection: " + player.getNextPosition());
+        player.nextmove();
+        aidirector.moveBots();
     }
 
 }
