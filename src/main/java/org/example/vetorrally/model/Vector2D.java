@@ -87,6 +87,11 @@ public class Vector2D {
         }
     }
 
+
+    public boolean vectorEquals(Vector2D obj) {
+        return ((this.x == obj.x) && (this.y == obj.y));
+    }
+
     /**
      * to string method for easy output
      * @return string composed of "Vector2D{x=[x value], y=[y value]}"

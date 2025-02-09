@@ -137,9 +137,7 @@ class Test_Player {
     @DisplayName("Player getNextPosition should correctly predict position")
     void testGetNextPosition() {
         // First move (1,0)
-        String input = "1\n0\n";
-        InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
+        provideInput("1\n0\n");
 
         // Create new inputHandler and player with this input
         InputHandler testInputHandler = new InputHandler();
@@ -151,7 +149,6 @@ class Test_Player {
         assertEquals(7, nextPos.getX()); // Current position (6) + speed (1)
         assertEquals(5, nextPos.getY());
 
-        // Reset System.in
-        System.setIn(System.in);
+
     }
 }

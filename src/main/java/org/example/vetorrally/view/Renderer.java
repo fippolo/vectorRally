@@ -117,10 +117,12 @@ public class Renderer {
      * @return index of the object, if not found defaults to -1
      */
     private int occupiedSpaceIndex(Vector2D v){
+        int i=0;
         for (Vector2D occupied : occupiedSpace) {
-            if(occupied.equals(v)){
-                return occupiedSpace.indexOf(v); // object found
+            if(occupied.vectorEquals(v)){
+                return i; // object found
             }
+            i++;
         }
         return -1; // default
     }
